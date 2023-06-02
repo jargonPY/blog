@@ -1,0 +1,174 @@
+---
+title: REST
+date: '2022-10-07'
+tags: []
+draft: false
+summary: summary
+images: []
+layout: PostLayout
+---
+
+REST: An In-Depth look into the architecture.
+
+Intro:
+
+REST is the name of an architectural style. What do we mean by architectural style?
+
+## The Goal of REST:
+
+Imagine we are defining a new protocol for the Web. How should we go about defining it? To start we need to have a clear idea of what is the goal of the system? This
+will guide our decisions. - Maybe start ealier, there are computers across the organization, and other research organizations that have lots of valuable information. The goal is to be able
+to easily, retreive, search, and explore/discover this information. In other words we want to make it useful and accessible.
+
+- _The rise of e-commerce and domain specific applications changed the nature of the web_. From a distributed system for sharing knowledge (through hypermedia) to domain specific services,
+  and closed applications (not interacting with other resources on the Web).
+
+- A key feature of HTTP is the negotiation of data representation.
+
+- When many sources of networked information are available to a reader, and when a discipline of reference between different sources exists, it is possible to rapidly follow references between units
+  of information which are provided at different remote locations. As response times should ideally be of the order of 100ms in, for example, a hypertext jump, this requires a fast, stateless,
+  information retrieval protocol. https://www.w3.org/Protocols/HTTP/HTTP2.
+
+- A distributed file system.
+
+- _Early on (before HTTP 1.1) new features were introduced using a try and see approach. A server and a browser would add a feature and see if it got traction. Interoperability problems were common.
+  This leads to the most important contraint of REST, "Uniform Interface"_.
+
+- Most modern Web applications are "native applications" acessed through the browser. They interact with a single server, and don't link to outside resources. The use case is not a distributed
+  hypermedia system (where many heterogenous parties are involved) but rather a single application where the server and the client are controlled by a single entity. Rather than using Hypermedia as
+  Engine of Application State, knowledge of state (ex. when to disable a submit button) and representations (ex. the fields required on a form) is hardcoded into the client application.
+
+REST is an architectural style - a set of constraints - designed to inform the process of building distributed hypermedia system. For Fielding REST was model for what
+a well functioning system would look like, in turn he could use the model to understand how modification to the HTTP protocol may effect it.
+
+## What REST is Not:
+
+- A how-to guide to designing APIs.
+- REST is focused on how to strucuture the web as a whole rather than any one specific service/server/API.
+
+---
+
+#### The importance of modeling systems:
+
+We need to define the system and its goals. Then we need to build a model of the system in order to be able to analyze its properties and understand its behaviours/outcomes to various inputs.
+Think of it like a circuit we can define/model it at the level of transistors or at the level of the microchips. Choosing the right level of abstraction will help us narrow down the behaviours we
+are interested in. Having a model allows us to analyze/predict the behaviours of the system and how changes will effect it without having to build it. This allows us to explore the space of possibilities
+at a much greater pace, at no cost. In addition it gives a method of systematically developing towards a desired behaviour and comparing different systems based on well defined criteria.
+
+Just like in physics, the model will give us predictive power (or is it like biology with only explanatory power?).
+In electrical engineering and other disciplines it is often much easier to find the boundaries at which we want to abstract. These boundaries are often driven by the physical components. In software
+however the boundaries are more abstract/arbitrary.
+
+---
+
+## Part I: A little bit on software architecture (Developing a Model of the System)
+
+### Why:
+
+In order to develop any complex system (and fit it into our heads) we need to decompose it into its "fundamental" constituants. By breaking down a system into smaller
+components we can begin analyzing the properties of these components and their inter-relationships. The choice of what constitutes a "fundamental" component depends
+on the level at which we are studying a system. A complex system will contain many levels of abstraction, each with its own architecture.
+
+By focusing on the building blocks we can begin understanding the behaviour of our system. its properties, and limitations.
+
+Great we understand the importance of breaking a system down into its building blocks, the question then is what are those building blocks? More concretly what should we
+consider a building block of a program? Is it a single function? module? a collection of modules (subsystem)? As it turns out all of these can be considered our building
+blocks, in order to indentify the building blocks we need to decide the level of abstraction at which we want to analyze our software and the framework we want to use.
+
+A framework/model defines a set of elements that it deems to be the "important parts" of a system. Different frameworks may choose to focus on certain parts of a system
+while ignoring others, the right choice of framework often depends on the domain of the problem.
+
+In order to better analyze/complex systems we need a framework that helps us identify all the important parts of a system.
+
+Once we have a model that allows us to identify what we mean by "important parts" - elements - we can begin applying constraints in order to derive a set of properties
+we would like our system to have.
+
+"Hiding some of the details of a system through encapsulation in order to better _identify and sustain its properties_".
+
+### What/How:
+
+A software architecture is defined by a set of architectural elements - components, connectors, and data - constrained in their relationships in order to achieve a desired
+set of architectural properties.
+
+Architectural styles constrain both the elements and the relationship between the elements. Styles do not exist in a vacuum, they are influenced by (and can influence)
+engineering principles and the materials used (materials have certain properties that are used in a particular style).
+
+The desired properties are the guidelines we can use to build a "good" system. These properties may be general engineering (i.e. principle of generality) principles or
+come from the requirements of the software at hand (i.e. fast-response times).
+
+### Roy Fielding's choice of elements making up the software architecture:
+
+1. Components - elements that perform transformations on data.
+
+2. Connectors - elements that hold the architecture together, by faciliatating communication between components.
+
+3. Data - elements that contain the information that is used and transformed.
+
+## Part II: Network Based Applications
+
+As previously mentioned the choice of elements, properties greatly various between different domains. In order to fairly compare the pros and cons of any design decision
+(induced constraint and its resulting property) we need to be clear about the domain of applicatio on which Roy focuses. Namely the focus in on distributed hypermedia
+systems.
+
+### Distributed Hypermedia Systems:
+
+#### Hypermedia:
+
+A hyperlink is a reference to data that the user can follow by clicking or tapping.[1] A hyperlink points to a whole document or to a specific element within a document.
+Hypertext is text with hyperlinks. A software system that is used for viewing and creating hypertext is a hypertext system.
+
+Hypermedia is an extension hypertext that includes graphics, audio, video, plain text and hyperlinks.
+
+#### Distributed:
+
+A distributed system is a system whose components are located on different networked computers, which communicate and coordinate their actions by passing messages to one
+another. he terms are nowadays used in a much wider sense, even referring to autonomous processes that run on the same physical computer and interact with each other by
+message passing.
+
+While there is no single definition of a distributed system,[10] the following defining properties are commonly used as:
+
+There are several autonomous computational entities (computers or nodes), each of which has its own local memory.[11]
+The entities communicate with each other by message passing.[12]
+A distributed system may have a common goal, such as solving a large computational problem;[13] the user then perceives the collection of autonomous processors as a unit. Alternatively, each computer may have its own user with individual needs, and the purpose of the distributed system is to coordinate the use of shared resources or provide communication services to the users.[14]
+
+Other typical properties of distributed systems include the following:
+
+The system has to tolerate failures in individual computers.[15]
+The structure of the system (network topology, network latency, number of computers) is not known in advance, the system may consist of different kinds of computers and network links, and the system may change during the execution of a distributed program.[16]
+Each computer has only a limited, incomplete view of the system. Each computer may know only one part of the input.[17]
+
+#### Goal:
+
+information retrieval, discovery, and exploration of resources.
+
+### Desired Properties
+
+In his dissertation Roy identifies several key properties upon which he bases his design choices. The properties are:
+
+1. Performance
+2. Scalability
+3. Simplicity
+4. Modifiability
+
+Although these properties are rather general - one can argue any robust sotware system should have these properties - it is in the specific nature of network-based
+applications where we diverge in both our defintions (ex. performance here means network based rather than CPU cycles) of these properties and their potential
+implementations (Scalability for local systems have different characteristics than global systems).
+
+## Part III: Deriving REST
+
+Now that we have an understanding of the properties we want our system to have, we need to identify the set of constraints that will ensure our system has the desired
+properties.
+
+### REST Constraints:
+
+## Part IV: REST vs. Other Architectures:
+
+pass
+
+## Miscellaneous
+
+f(constraints) = properties
+
+A mapping from the set of constraints (x) to the set of properties (y).
+
+The question is given a set of properties how do we find the set of constraints that lead to these properties, f^-1(y) = x.

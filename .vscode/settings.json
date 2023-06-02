@@ -1,0 +1,12 @@
+{
+  "editor.minimap.enabled": false,
+  "editor.fontFamily": "Fira Code", // Try monospace and Fire Code
+  "editor.fontWeight": "600",
+  "editor.lineHeight": 1.8,
+  "markdown-preview-enhanced.previewTheme": "atom-dark.css",
+  "terminal.integrated.fontFamily": "monospace",
+  "terminal.integrated.letterSpacing": 2,
+  "terminal.integrated.lineHeight": 1.4,
+  "terminal.integrated.cursorStyle": "underline",
+  "search.mode": "reuseEditor"
+}

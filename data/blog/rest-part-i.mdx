@@ -1,0 +1,266 @@
+---
+title: REST Part I
+date: '2022-12-06'
+tags: []
+draft: false
+summary:
+images: []
+layout: PostLayout
+---
+
+- Call this post "Deriving the Web" or "Designing the Web".
+
+System - a set of interacting parts.
+
+Understand a system through its motivations and properties. This gives insight into the reasoning behind decisions.
+For example to understand understand why HTTP is a stateless protocol we need to know why statelessness was a desired property
+of the system.
+
+Outline the type of system we want and show how a protocol like HTTP can be derived from it. Instead of giving a chronological list
+of events present the problem, present the properties (motivated by the problems) a solution needs to have (system that aims to solve the problem)
+and show how HTTP can be derived from those properties as a solution, then show how REST is derived from that.
+
+_Its will be important to note that many of ideas were derived by looking at existing information systems, taking the desirable properties of each one
+and bringing them together_.
+
+    - This is a reccuringg theme in technology, often times its not the groundbreaking initial invention that wins, but rather a system that brings many
+    existing ideas together in a new combination.
+
+Although HTTP is a protocol it emposes a certain architectural style (client-server, stateless, etc.). REST takes those architectural constraints
+and extends them (and seperates the architectural decisions from the protocol). A protocol forces certain constraints on you, while an architectural
+style is a way of building systems with certain desirable properties but it can be adapted and changed to specifc needs of a system (in other words
+its not forced on you).
+
+- For example there is no way to build stateful systems that are based on HTTP (at least not directly as part of the protocol, one can make it part of the payload, as in JWT).
+- On the other hand its possible to build non-restful systems based on HTTP.
+
+The Web and REST are tightly connected, to understand the goals of REST we need to understand a little
+about the history of the Web.
+
+Context: Understanding the Problem
+
+- Put the reader in those times, describe the motivations, the existing technologies
+
+- Describe the multitude of file sharing systems and their drawbacks (Gopher seems to be the main competitor)
+
+- Important to understand the knowledge sylos that are created even within the organization, given the
+  difficulty of using any existing systems
+
+- Describe how HTTP, HTML, and URL are designed specifically solutions to those problems.
+
+### Points of Discussion
+
+- The main goal was to connect and share documents over the internet.
+- Other prominent implementations of hypertext based systems (ENQUIRE, HyperCard, NLS).
+
+There are a lot of directions in which the story of the web can go down:
+
+- The story of hypertext.
+- The story of competing information systems, how the web was different, and how it won.
+- The story of how the web evolved from its original vision to its modern form.
+
+- The story of the design of the web, a systems perspective. The technical properties and constraints that gave it the strcuture it has, and the problems that it solved.
+
+  - How to design a system that gives us the behaviour we want?
+    For that we need to _define what behaviour do we want_. Once thats defined we need to arrive at a set of properties/constraints the systems needs to have in order
+    for it to give rise to the desired behaviour.
+
+    Elements - The individual (atomic) parts of the system (document, client, server etc.)
+    Constraints - The rules by which the elements of the system interact.
+    Properties - The set of behaviours that arise in the system from the combination of elements and constraints.
+
+#### Tim Berners-Lee and CERN
+
+- **The idea of hypetext** as a user-interface, the way in which the worlds information can be connected.
+
+- 1980 Tim Berners-Lee developed ENQUIRE
+- 1989 Tim Berners-Lee and Robert Cailliau started working on a larger, internet based version of Enquire.
+- Gopher was an information retrieval system in the early 1990s, however in 1993 it was announced
+  that it was going to start charging a licensing fee, many organizations started to look for an alternative.
+- The WorldWideWeb - a program for reading the new document format, HTML (i.e. the first browser) - was first developed
+  in 1991, two major events catapulted its popularity: 1. The decision by CERN in 1993 to relase the source code of WorldWideWeb into the public domain. - https://home.cern/science/computing/birth-web/licensing-web 2. The development of the Mosaic browser (1993-1994) in NCSA that combined a web browser and a Gopher client.
+
+- The first HTML spec was released in 1993, JS in 1995, and CSS in 1996.
+- The DOM was introduced in 1998. Prior to the DOM each browser its own API for handling the document tree-based structure.
+
+#### Gopher
+
+https://thehistoryoftheweb.com/what-the-web-could-have-been/
+
+- Gopher's protocol emphasized hierarchy over the loose connectivity of the web. the Internet was originally conceived as a way to connect
+  (mostly text) documents. So being able to browse documents by type through organized directories was a distinct advantage.
+
+#### Browser Wars and Web Standards
+
+- The browser wars (Microsoft vs. Netscape) led to many incomaptible features, broken existing features,
+  forcing developers and companies to effectively build two versions of their website.
+
+- Moreover each browser had a slightly different version of Javascript, this led to a lot of furstration as developers
+  had to know serveral different "versions" of JS.
+
+- At this point there were many commercial interests involved and were a core driver of any potential standards.
+
+- The introduction of AJAX was a watershed moment for the web, as the website could now be updated without having to
+  reload the entire page.
+
+History of web standards: https://www.w3.org/wiki/The_history_of_the_Web
+General timeline: https://thehistoryoftheweb.com/timeline/
+Timeline of various technologies: https://www.matthewgerstman.com/tech/history-of-the-web/
+
+### Information Management: A Proposal (Paper 1990)
+
+https://history-computer.com/Library/ProposalLee.pdf
+
+<br />
+<br />
+
+### The World-Wide Web (Paper)
+
+https://web.stanford.edu/class/cs344g/www-1992.pdf
+
+The aim of W3 initiative is to:
+
+1. Make a single, easy user-interface to all types of information so that all can access it.
+2. Make it easy to add new information.
+
+- Most information exists in machine-readable form. The goal is to standardize its access, presentation, and trasfer.
+- FTP archives, Gopher, WAIS and others have been mapped onto the web, solving the problem of too many, disconnected information systems.
+- Important point is that the user model is hypertext but the data need not be in hypertext form, since tools can automate the process of
+  adding simple hypertext structure to plain text documents (for example include the files in the folder etc.).
+
+W3 uses a client-server architecture to allow:
+
+1. Complex presentation functionality to be provided by the client.
+   - Also allows clients to implement other protocols (FTP, Gopher etc.), giving it access to other existing systems of information.
+2. Powerful search and data manipulation to be provided by the server.
+
+#### Desired Properties of the Protocol
+
+The client and the server are connected by a stateless, search and retreive protocol.
+
+- _Stateless is a required property due to the rapid traversal of links between documents on different servers. This makes the concept of a session
+  between the client and server inapproperiate._
+- Minimum number of round trips (ensuring the round-trip delays do not become the bottleneck factor in response time).
+- Byte stream oriented protocol which enables pipelining. Displaying the document as it comes, without having to wait for the whole document to finish transferring.
+
+#### Data Encoding
+
+- Data format negotiation of HTTP is designed to allow flexibility and co-existence of various encoding protocols, without enforcing any specific one,
+  allowing market forces to decide on the best protocols. Also allows for extandability for specialized use (ex. adapt a browser to open DNA data in a new application).
+- W3 clients will not themselves be able to handle all formats, but will be configurable to launch other applications.
+
+<br />
+<br />
+
+### World-Wide Web: The Information Universe (Paper)
+
+https://www.w3.org/History/1992/ENRAP/Article_9202.pdf
+
+- _Men have dreamed of extending their intellect by making their collective knowledge available to each individual by using machines._
+- Computers enable this man-knowledge interface through:
+
+  1. Hypertext.
+  2. Text retrieval.
+  3. Wide-area networks.
+
+- Exisiting systems lacked one of these attributes (Gopher, WAIS didn't have hypertext functionality, others were restircted to local file systems etc.).
+
+#### The W3 Data Model
+
+- Interstingly indexes are represented as documents with the ability to enter search words, the result is another "virtual" hypertext document,
+  pointing to the documents found.
+
+- Documents do not have to exist as files, they can be "virtual" documents generated by the server in response to a query or a document name,
+  which will represent some of view of a database etc.
+
+- All existing information systems can be represented by the W3 model, since it can capture both hierarchical and cross-linked styles.
+
+#### Publishing
+
+From the information provider’s point of view, existing information systems may be “published” as part of the web simply by giving access to the data
+through a small server program.
+
+- There is a lot of emphasis placed on ensuring that publishing existing information is a simple process and does not require any restructuring or rewriting of the data.
+  As that will hinder the prolifiration of W3.
+
+- In effect publishing means having an HTTP server (a program listening on some port that understand the HTTP protocol) and responds with a document.
+
+#### W3 Architecture
+
+Hypertext and text retrieval has been around for many years, which leads to a question why no global system has come into existence?
+Some traditional answers are the lack of:
+
+- A common naming scheme for documents.
+- Common network access protocols.
+- Common data formats for hypertext.
+
+Key point is the decoupling the action of providing the documents, from the action of rendering them (presenting them to the user).
+This is done through the client-server model. Most hypertext systems assumed that all users run the same application and share a common
+file system, however W3 is aimed at distributed heterogeneous set of computers running different applications which use different preferred data formats.
+
+The client has the responsibility for resolving a document address into a document using its repertoire of network protocols. The server provides data in
+a simple hypertext or plain text form, or, by negotiation with the client, in any other data format.
+
+The client and the server are decoupled by the "information bus".
+
+```
+                        Client
+
+----------------------------------------------------------
+Addressing scheme + Common protocol + Format negotiation
+----------------------------------------------------------
+
+                        Server
+```
+
+#### Document Naming
+
+The fulcrum on which the document universe rests is the scheme for naming documents. A document name provides a method for the client to find the
+server, and for the server to find the document. In the W3 model, a name can also specify a part of the document to be selected by the displaying application.
+
+- Any lasting reference to a document must be a logical name rather than a physical address.
+- A document name should not contain any information which is transitory (such as file length etc.).
+
+The W3 naming scheme fulfills these requirements, but is otherwise open to the addition of new protocols as technology evolves. For this purpose a prefix is
+used to identify the protocol (and therefore naming scheme) to be used. Clients which do not have that protocol in their repertoire refer to a gateway for translation.
+**Q:** Does that mean that `www` is part of the naming scheme? Are there other naming schemes?
+
+#### Document Formats
+
+All client applications will implement the SGML style format defined for hypertext documents.
+In addition client applications can incorporate format negotiation.
+
+- Inspired by the Dexter data model and the HyTime standard.
+
+#### WAIS and the Web
+
+The WAIS protocol represents a significant advance on the search and retrieve (SR) protocol standard, by being stateless and using persistent naming.
+However the names used are local to the database.
+
+- Results of a search need to point to documents only local to the server, making every server is responsibile for indexing and actually providing the data.
+- W3 does not have this restriction thus allowing "third-party" indexers/reviewers to refer to data they do not actually hold.
+
+  - _This property is what enables search engines._
+  - "Futhermore, as on-line information proliferates, an important function is that of
+    “third party” reviewers, indexers and overview writers who refer to data they do
+    not actually hold. It is expected that these services will be a key to the control of
+    the information explosion, and a valuable asset to the community."
+
+- A W3 user builds a personalized web of information by making links from his own notebook into the web.
+
+#### Other Notes
+
+A lot of emphasis is placed on how existing systems can integrate with the W3 model (used simultaneously in the same client and even reference each other).
+It describes which properties of each system are desirable and have an analog in the W3 model and where each of these lacks from achieving "the dream".
+
+A typical information hunt will start from a default hypertext page by following links to an index. A search of that index may return the required
+data, or some more links may be followed. When the user of a hypertext editor has found what he wants, he can make a new link to it from
+his home page so that he can find it again later almost instantly. This is generally preferable to making a copy which may soon be out of date.
+
+### Books
+
+https://www.amazon.com/Weaving-Web-Original-Ultimate-Destiny/dp/006251587X
+https://www.amazon.com/How-Web-was-Born-Story/dp/0192862073
+https://www.amazon.com/Architects-Web-Built-Future-Business/dp/0471325732
+https://en.wikipedia.org/wiki/Literary_Machines
+https://en.wikipedia.org/wiki/Computer_Lib/Dream_Machines
